@@ -1,0 +1,128 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+generator dbml {
+    provider = "prisma-dbml-generator"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+    ADMIN
+    CUSTOMER
+}
+
+enum PaymentStatus {
+    PENDING
+    PAID
+}
+
+enum OrderStatus {
+    PAYMENTSUCESSFUL
+    PROCESSING
+    OUTFORDELIVERY
+    DELIVERED
+}
+
+enum Department {
+    PRODUCTS
+    LIVINGROOM
+    DININGROOM
+    BEDROOM
+    WORKSPACE
+    OUTDOOR
+}
+
+enum CategoryType {
+    SEATING
+    TABLES
+    BEDANDMATTRESSES
+    OFFICE
+    OUTDOOR
+    LIGHTING
+    OFFICECHAIRS
+    OFFICEDESKS
+}
+
+model User {
+    id        Int      @id @default(autoincrement())
+    password  String
+    firstName String
+    lastName  String
+    email     String   @unique
+    mobile    String   @unique
+    role      UserRole
+
+    Address      Address[]
+    OrderDetails OrderDetails[]
+}
+
+model Address {
+    id           Int     @id @default(autoincrement())
+    address      String
+    province     String
+    district     String
+    sub_district String?
+    post_code    Int
+    userId       Int
+    user         User    @relation(fields: [userId], references: [id])
+}
+
+model Product {
+    id         Int          @id @default(autoincrement())
+    SKU        String       @unique
+    name       String
+    desc       String       @db.VarChar(255)
+    category   CategoryType
+    department String
+    price      Int
+    imageUrl   String
+    vdoUrl     String
+
+    createdAt DateTime
+    updatedAt DateTime
+
+    OrderItems OrderItems[]
+}
+
+model OrderDetails {
+    id          Int           @id @default(autoincrement())
+    userId      Int
+    user        User          @relation(fields: [userId], references: [id])
+    total       Int
+    createdAt   DateTime
+    updatedAt   DateTime
+    orderStatus OrderStatus
+    paymentId   Int
+    payment     PaymentDetail @relation(fields: [paymentId], references: [id])
+
+    OrderItems OrderItems[]
+}
+
+model OrderItems {
+    id            Int          @id @default(autoincrement())
+    orderDetailId Int
+    OrderDetail   OrderDetails @relation(fields: [orderDetailId], references: [id])
+    productId     Int
+    product       Product      @relation(fields: [productId], references: [id])
+    quantity      Int
+    createdAt     DateTime
+    updatedAt     DateTime
+}
+
+model PaymentDetail {
+    id            Int           @id @default(autoincrement())
+    orderDetailId Int
+    totalPrice    Int
+    paymentStatus PaymentStatus
+    slipURL       String
+    createdAt     DateTime
+    updatedAt     DateTime
+    modified_at   DateTime
+
+    OrderDetails OrderDetails[]
+}

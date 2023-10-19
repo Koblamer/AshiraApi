@@ -1,0 +1,124 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id Int [pk, increment]
+  password String [not null]
+  firstName String [not null]
+  lastName String [not null]
+  email String [unique, not null]
+  phoneNumber String [unique, not null]
+  role UserRole [not null]
+  Address Address [not null]
+  OrderDetails OrderDetails [not null]
+}
+
+Table Address {
+  id Int [pk, increment]
+  address String [not null]
+  province String [not null]
+  district String [not null]
+  sub_district String
+  post_code Int [not null]
+  userId Int [not null]
+  user User [not null]
+}
+
+Table Product {
+  id Int [pk, increment]
+  SKU String [unique, not null]
+  name String [not null]
+  desc String [not null]
+  category CategoryType [not null]
+  department String [not null]
+  price Int [not null]
+  imageUrl String [not null]
+  vdoUrl String [not null]
+  createdAt DateTime [not null]
+  updatedAt DateTime [not null]
+  OrderItems OrderItems [not null]
+}
+
+Table OrderDetails {
+  id Int [pk, increment]
+  userId Int [not null]
+  user User [not null]
+  total Int [not null]
+  createdAt DateTime [not null]
+  updatedAt DateTime [not null]
+  orderStatus OrderStatus [not null]
+  paymentId Int [not null]
+  payment PaymentDetail [not null]
+  OrderItems OrderItems [not null]
+}
+
+Table OrderItems {
+  id Int [pk, increment]
+  orderDetailId Int [not null]
+  OrderDetail OrderDetails [not null]
+  productId Int [not null]
+  product Product [not null]
+  quantity Int [not null]
+  createdAt DateTime [not null]
+  updatedAt DateTime [not null]
+}
+
+Table PaymentDetail {
+  id Int [pk, increment]
+  orderDetailId Int [not null]
+  totalPrice Int [not null]
+  paymentStatus PaymentStatus [not null]
+  slipURL String [not null]
+  createdAt DateTime [not null]
+  updatedAt DateTime [not null]
+  modified_at DateTime [not null]
+  OrderDetails OrderDetails [not null]
+}
+
+Enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
+Enum PaymentStatus {
+  PENDING
+  PAID
+}
+
+Enum OrderStatus {
+  PAYMENTSUCESSFUL
+  PROCESSING
+  OUTFORDELIVERY
+  DELIVERED
+}
+
+Enum Department {
+  PRODUCTS
+  LIVINGROOM
+  DININGROOM
+  BEDROOM
+  WORKSPACE
+  OUTDOOR
+}
+
+Enum CategoryType {
+  SEATING
+  TABLES
+  BEDANDMATTRESSES
+  OFFICE
+  OUTDOOR
+  LIGHTING
+  OFFICECHAIRS
+  OFFICEDESKS
+}
+
+Ref: Address.userId > User.id
+
+Ref: OrderDetails.userId > User.id
+
+Ref: OrderDetails.paymentId > PaymentDetail.id
+
+Ref: OrderItems.orderDetailId > OrderDetails.id
+
+Ref: OrderItems.productId > Product.id
