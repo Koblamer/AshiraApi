@@ -21,9 +21,27 @@ const jobData = [
   { title: "Learn Node", userId: 4 },
 ];
 
+const productData = [
+  {
+    SKU: "SEAT_01",
+    name: "Onsa Armchair",
+    desc: "A reclining chair with function and a particular aesthetic: the seat shell and armrests open up from the backrest like a flower. The soft, inviting upholstery, high back and height-adjustable padded seat create a beautiful feeling of relaxation and security. For dreaming, reading, watching TV, or listening to music - in private rooms or hospitality areas",
+    category: "SEAT",
+    department: "LIVINGROOM",
+    price: "309000",
+    imageUrl:
+      "https://res.cloudinary.com/ds8j71inq/image/upload/v1698053680/LivingRoomPic/Seating/LivSetPic4_sgygcg.jpg",
+    vdoUrl: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    dimensions: "w78-0 x D90-109 x H108-0",
+  },
+];
+
 console.log("Seed...");
 
-prisma.user
-  .createMany({ data: userData })
-  .then(() => prisma.job.createMany({ data: jobData }))
-  .then(console.log);
+prisma.product.createMany({ data: productData });
+// prisma.user
+//   .createMany({ data: userData })
+//   .then(() => prisma.job.createMany({ data: jobData }))
+//   .then(console.log);

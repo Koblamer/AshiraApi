@@ -76,7 +76,8 @@ model Product {
     id         Int          @id @default(autoincrement())
     SKU        String       @unique
     name       String
-    desc       String       @db.VarChar(255)
+    desc       String       @db.VarChar(1000)
+    dimensions String
     category   CategoryType
     department String
     price      Int
@@ -90,15 +91,13 @@ model Product {
 }
 
 model OrderDetails {
-    id          Int           @id @default(autoincrement())
+    id          Int         @id @default(autoincrement())
     userId      Int
-    user        User          @relation(fields: [userId], references: [id])
+    user        User        @relation(fields: [userId], references: [id])
     total       Int
     createdAt   DateTime
     updatedAt   DateTime
     orderStatus OrderStatus
-    paymentId   Int
-    payment     PaymentDetail @relation(fields: [paymentId], references: [id])
 
     OrderItems OrderItems[]
 }
@@ -123,6 +122,4 @@ model PaymentDetail {
     createdAt     DateTime
     updatedAt     DateTime
     modified_at   DateTime
-
-    OrderDetails OrderDetails[]
 }

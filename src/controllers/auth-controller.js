@@ -38,7 +38,7 @@ exports.signIn = async (req, res, next) => {
 
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ email: value.email }],
+        email: value.email,
       },
     });
 
