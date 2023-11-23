@@ -10,6 +10,9 @@ const productRoute = require("./routes/product-route");
 
 const authRoute = require("./routes/auth-route");
 const orderRoute = require("./routes/order-route");
+const paymentRoute = require("./routes/payment-route");
+const imageRoute = require("./routes/image-route");
+const addressRoute = require("./routes/address-route");
 
 const app = express();
 
@@ -22,6 +25,9 @@ app.use(express.static("public"));
 app.use("/product", productRoute);
 app.use("/auth", authRoute);
 app.use("/order", orderRoute);
+app.use("/payment", paymentRoute);
+app.use("/image", imageRoute);
+app.use("/address", addressRoute);
 // app.use("/admin",adminRoute);
 
 const PORT = process.env.PORT || "5000";

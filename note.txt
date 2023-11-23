@@ -11,3 +11,6 @@
 4.npx prisma migrate dev --name <ตามด้วยชื่อdatabase>
 สำหรับสร้างก้อน database ไปยัง mySQL
 ----
+
+5. Update database schema
+- prisma migrate dev

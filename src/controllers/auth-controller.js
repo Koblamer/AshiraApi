@@ -22,7 +22,18 @@ exports.signUp = async (req, res, next) => {
         role: "CUSTOMER",
       },
     });
-    res.status(200).json({ message: "Sing Up complete" });
+
+    const payload = { userId: user.id };
+    const accessToken = jwt.sign(
+      payload,
+      process.env.JWT_SECRET_KEY || "kjhkjhk54sksjkdhaskljdldtyf79",
+      {
+        expiresIn: process.env.JWT_EXPIRE,
+      }
+    );
+    delete user.password;
+
+    res.status(201).json({ message: "Sing Up complete", accessToken, user });
   } catch (err) {
     console.log(err);
     next(err);

@@ -8,7 +8,7 @@ exports.getAllProducts = async (req, res, next) => {
     if (query.department === "allproducts") {
       products = await prisma.Product.findMany({
         where: {
-          category: query.category.toUpperCase(),
+          category: query?.category?.toUpperCase(),
         },
       });
     } else {
@@ -43,6 +43,65 @@ exports.getProductById = async (req, res, next) => {
     });
 
     res.status(201).json({ product });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.addProduct = async (req, res, next) => {
+  try {
+    const { body } = req;
+
+    let product;
+
+    product = await prisma.Product.create({
+      data: {
+        ...body,
+        price: +body?.price,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    res.status(201).json({ product });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateProduct = async (req, res, next) => {
+  try {
+    const { body, params } = req;
+
+    console.log("updateProduct body =", body);
+    console.log("updateProduct params =", params);
+
+    let product;
+
+    product = await prisma.Product.update({
+      data: body,
+      where: {
+        id: +params?.id,
+      },
+    });
+
+    res.status(201).json({ product });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteProduct = async (req, res, next) => {
+  try {
+    const { params } = req;
+
+    const product = await prisma.product.delete({
+      where: {
+        id: +params.id,
+      },
+    });
+
+    res.status(201).json({ message: "Delete product complete", product });
   } catch (err) {
     next(err);
   }
