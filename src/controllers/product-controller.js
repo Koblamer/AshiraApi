@@ -79,7 +79,20 @@ exports.updateProduct = async (req, res, next) => {
     let product;
 
     product = await prisma.Product.update({
-      data: body,
+      data: {
+        id: body?.id,
+        SKU: body?.SKU,
+        name: body?.name,
+        desc: body?.desc,
+        dimensions: body?.dimensions,
+        category: body?.category,
+        department: body?.department,
+        price: +body?.price,
+        imageUrl: body?.imageUrl,
+        vdoUrl: body?.vdoUrl,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
       where: {
         id: +params?.id,
       },
@@ -95,6 +108,7 @@ exports.deleteProduct = async (req, res, next) => {
   try {
     const { params } = req;
 
+    console.log("params =", params);
     const product = await prisma.product.delete({
       where: {
         id: +params.id,
