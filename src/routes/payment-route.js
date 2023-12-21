@@ -10,4 +10,9 @@ router.post(
   paymentController.uploadSlipPayment
 );
 
+// router.post(
+//   "/addPaymentReceiptDetail",
+//   paymentController.addPaymentReceiptDetail
+// );
+
 module.exports = router;

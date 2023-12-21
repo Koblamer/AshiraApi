@@ -42,6 +42,7 @@ exports.signUp = async (req, res, next) => {
 
 exports.signIn = async (req, res, next) => {
   try {
+    console.log(req.body);
     const { value, error } = signInSchema.validate(req.body);
     if (error) {
       return next(error);
@@ -67,7 +68,6 @@ exports.signIn = async (req, res, next) => {
     const accessToken = jwt.sign(
       payload,
       process.env.JWT_SECRET_KEY || "kjhkjhk54sksjkdhaskljdldtyf79",
-
       {
         expiresIn: process.env.JWT_EXPIRE,
       }

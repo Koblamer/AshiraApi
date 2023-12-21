@@ -19,12 +19,14 @@ enum UserRole {
 enum PaymentStatus {
     PENDING
     PAID
+    CANCEL
 }
 
 enum OrderStatus {
-    PAYMENTSUCESSFUL
     PROCESSING
-    OUTFORDELIVERY
+    SHIPPED
+    IN_TRANSIT
+    OUT_FOR_DELIVERY
     DELIVERED
 }
 
@@ -115,12 +117,24 @@ model OrderItems {
 }
 
 model PaymentDetail {
-    id            Int           @id @default(autoincrement())
-    orderDetailId Int
-    totalPrice    Int
-    paymentStatus PaymentStatus
-    slipURL       String
-    createdAt     DateTime
-    updatedAt     DateTime
-    modified_at   DateTime
+    id                   Int                    @id @default(autoincrement())
+    orderDetailId        Int
+    totalPrice           Int
+    paymentStatus        PaymentStatus
+    slipURL              String
+    createdAt            DateTime
+    updatedAt            DateTime
+    modified_at          DateTime
+    PaymentReceiptDetail PaymentReceiptDetail[]
+}
+
+model PaymentReceiptDetail {
+    id                  Int           @id @default(autoincrement())
+    paymentDetailId     Int
+    paymentDetail       PaymentDetail @relation(fields: [paymentDetailId], references: [id])
+    destinationBank     String
+    sourceBank          String
+    senderAccountNumber Int
+    transactionDate     DateTime
+    amount              Int
 }

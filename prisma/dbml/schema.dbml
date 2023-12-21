@@ -73,6 +73,18 @@ Table PaymentDetail {
   createdAt DateTime [not null]
   updatedAt DateTime [not null]
   modified_at DateTime [not null]
+  PaymentReceiptDetail PaymentReceiptDetail [not null]
+}
+
+Table PaymentReceiptDetail {
+  id Int [pk, increment]
+  paymentDetailId Int [not null]
+  paymentDetail PaymentDetail [not null]
+  destinationBank String [not null]
+  sourceBank String [not null]
+  senderAccountNumber Int [not null]
+  transactionDate DateTime [not null]
+  amount Int [not null]
 }
 
 Enum UserRole {
@@ -83,12 +95,14 @@ Enum UserRole {
 Enum PaymentStatus {
   PENDING
   PAID
+  CANCEL
 }
 
 Enum OrderStatus {
-  PAYMENTSUCESSFUL
   PROCESSING
-  OUTFORDELIVERY
+  SHIPPED
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
   DELIVERED
 }
 
@@ -119,3 +133,5 @@ Ref: OrderDetails.userId > User.id
 Ref: OrderItems.orderDetailId > OrderDetails.id
 
 Ref: OrderItems.productId > Product.id
+
+Ref: PaymentReceiptDetail.paymentDetailId > PaymentDetail.id

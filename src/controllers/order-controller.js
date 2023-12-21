@@ -4,8 +4,44 @@ const prisma = require("../models/prisma");
 exports.getAllOrderDetail = async (req, res, next) => {
   try {
     const orders = await prisma.orderDetails.findMany({});
+    // const payment = await prisma.paymentDetail.findMany({
+    //   include: {
+    //     orderDetails: true,
+    //   },
+    // });
 
     res.status(201).json({ orders });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getOrderById = async (req, res, next) => {
+  try {
+    const { params } = req;
+    console.log("req =", req.params.id);
+
+    let order;
+
+    order = await prisma.orderDetails.findFirst({
+      where: {
+        id: +params.id,
+      },
+    });
+
+    const paymentDetail = await prisma.paymentDetail.findFirst({
+      where: {
+        orderDetailId: +params.id,
+      },
+    });
+
+    const paymentReciept = await prisma.paymentReceiptDetail.findFirst({
+      where: {
+        paymentDetailId: +paymentDetail.id,
+      },
+    });
+
+    res.status(201).json({ order, paymentDetail, paymentReciept });
   } catch (err) {
     next(err);
   }
@@ -15,11 +51,15 @@ exports.getItemByOrderNumber = async (req, res, next) => {
   try {
     const { params } = req;
 
+    console.log("getItemByOrderNumber params =", params);
+
     const orderDetail = await prisma.orderDetails.findFirst({
       where: {
         orderNumber: params.orderNumber,
       },
     });
+
+    console.log("orderDetail =", orderDetail);
 
     const orderItems = await prisma.orderItems.findMany({
       where: {
@@ -77,6 +117,20 @@ exports.addOrderDetail = async (req, res, next) => {
         },
       });
 
+      if (createPayment) {
+        const createPaymentReceiptDetail =
+          await prisma.paymentReceiptDetail.create({
+            data: {
+              paymentDetailId: +createPayment?.id,
+              destinationBank: body?.destinationBank,
+              sourceBank: body?.sourceBank,
+              senderAccountNumber: +body?.senderAccountNumber,
+              transactionDate: body.transactionDate,
+              amount: +body?.amount,
+            },
+          });
+      }
+
       const orderItemList = [];
       // Create OrderItems by products
       body.products.forEach(async (p) => {
@@ -112,6 +166,44 @@ exports.addOrderDetail = async (req, res, next) => {
     }
   } catch (err) {
     console.log(err);
+    next(err);
+  }
+};
+
+exports.updateOrder = async (req, res, next) => {
+  try {
+    const { body, params } = req;
+
+    let orderDetail;
+    let paymentDetail;
+
+    orderDetail = await prisma.orderDetails.update({
+      data: {
+        orderStatus: body.orderStatus,
+        updatedAt: new Date(),
+      },
+      where: {
+        id: +params?.id,
+      },
+    });
+
+    const payment = await prisma.paymentDetail.findFirst({
+      where: {
+        orderDetailId: +params?.id,
+      },
+    });
+
+    paymentDetail = await prisma.paymentDetail.update({
+      data: {
+        paymentStatus: body.paymentStatus,
+      },
+      where: {
+        id: payment.id,
+      },
+    });
+
+    res.status(201).json({ orderDetail, paymentDetail });
+  } catch (err) {
     next(err);
   }
 };

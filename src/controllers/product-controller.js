@@ -58,6 +58,7 @@ exports.addProduct = async (req, res, next) => {
       data: {
         ...body,
         price: +body?.price,
+        //validate ไม่ให้ราคาติดลบ
         createdAt: new Date(),
         updatedAt: new Date(),
       },
