@@ -12,6 +12,8 @@ exports.getAddressByUserId = async (req, res, next) => {
       },
     });
 
+    console.log("address =", address);
+
     res.status(201).json({ address });
   } catch (err) {
     next(err);
@@ -61,7 +63,7 @@ exports.updateAddress = async (req, res, next) => {
         province: body.province,
         district: body.district,
         sub_district: body.sub_district,
-        post_code: body.post_code,
+        post_code: +body.post_code,
         userId: body.userId,
       },
       where: {

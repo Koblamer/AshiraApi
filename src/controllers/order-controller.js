@@ -4,13 +4,29 @@ const prisma = require("../models/prisma");
 exports.getAllOrderDetail = async (req, res, next) => {
   try {
     const orders = await prisma.orderDetails.findMany({});
-    // const payment = await prisma.paymentDetail.findMany({
-    //   include: {
-    //     orderDetails: true,
-    //   },
-    // });
 
-    res.status(201).json({ orders });
+    let obj = [];
+
+    const promises = orders.map(async (data) => {
+      const payment = new Promise(async (resolve, reject) => {
+        const findPayment = await prisma.paymentDetail.findFirst({
+          where: {
+            orderDetailId: data?.id,
+          },
+        });
+
+        console.log("findPayment =", findPayment);
+
+        obj.push({ ...data, paymentStatus: findPayment.paymentStatus });
+        resolve(findPayment);
+      });
+      return payment;
+    });
+    const waitPayment = await Promise.all(promises);
+
+    console.log("obj =", obj);
+
+    res.status(201).json({ orders: obj });
   } catch (err) {
     next(err);
   }
@@ -47,6 +63,25 @@ exports.getOrderById = async (req, res, next) => {
   }
 };
 
+exports.getOrderByUserId = async (req, res, next) => {
+  try {
+    const { params } = req;
+    console.log("req =", req.params.userId);
+
+    let order;
+
+    order = await prisma.orderDetails.findMany({
+      where: {
+        userId: +params.userId,
+      },
+    });
+
+    res.status(201).json({ order });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getItemByOrderNumber = async (req, res, next) => {
   try {
     const { params } = req;
@@ -61,20 +96,25 @@ exports.getItemByOrderNumber = async (req, res, next) => {
 
     console.log("orderDetail =", orderDetail);
 
-    const orderItems = await prisma.orderItems.findMany({
-      where: {
-        orderDetailId: orderDetail?.id,
-      },
-      include: {
-        product: true,
-      },
-    });
+    let orderItems;
+    let payment;
 
-    const payment = await prisma.paymentDetail.findFirst({
-      where: {
-        orderDetailId: orderDetail?.id,
-      },
-    });
+    if (orderDetail) {
+      orderItems = await prisma.orderItems.findMany({
+        where: {
+          orderDetailId: orderDetail?.id,
+        },
+        include: {
+          product: true,
+        },
+      });
+
+      payment = await prisma.paymentDetail.findFirst({
+        where: {
+          orderDetailId: orderDetail?.id,
+        },
+      });
+    }
 
     res.status(201).json({ orderDetail, orderItems, payment });
   } catch (err) {

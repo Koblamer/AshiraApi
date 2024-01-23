@@ -6,6 +6,7 @@ const morgan = require("morgan");
 // const notFoundMiddleware = require("./middlewares/not-found");
 // const errorMiddleware = require("./middlewares/error");
 // const rateLimitMiddleware = require("./middlewares/rate-limit");
+const userRoute = require("./routes/user-route");
 const productRoute = require("./routes/product-route");
 
 const authRoute = require("./routes/auth-route");
@@ -22,6 +23,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.static("public"));
 
+app.use("/user", userRoute);
 app.use("/product", productRoute);
 app.use("/auth", authRoute);
 app.use("/order", orderRoute);

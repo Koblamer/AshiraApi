@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get("/", orderController.getAllOrderDetail);
 router.get("/:id", orderController.getOrderById);
+router.get("/userId/:userId", orderController.getOrderByUserId);
 router.get("/search/:orderNumber", orderController.getItemByOrderNumber);
 router.post(
   "/add",

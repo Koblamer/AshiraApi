@@ -2,6 +2,7 @@ const prisma = require("../models/prisma");
 
 exports.getAllProducts = async (req, res, next) => {
   try {
+    console.log("req =", req);
     const { query } = req;
     console.log(query);
     let products;
