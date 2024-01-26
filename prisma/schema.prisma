@@ -134,7 +134,7 @@ model PaymentReceiptDetail {
     paymentDetail       PaymentDetail @relation(fields: [paymentDetailId], references: [id])
     destinationBank     String
     sourceBank          String
-    senderAccountNumber Int
+    senderAccountNumber String
     transactionDate     DateTime
     amount              Int
 }

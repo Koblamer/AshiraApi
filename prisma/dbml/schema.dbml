@@ -82,7 +82,7 @@ Table PaymentReceiptDetail {
   paymentDetail PaymentDetail [not null]
   destinationBank String [not null]
   sourceBank String [not null]
-  senderAccountNumber Int [not null]
+  senderAccountNumber String [not null]
   transactionDate DateTime [not null]
   amount Int [not null]
 }

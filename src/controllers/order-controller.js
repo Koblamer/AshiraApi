@@ -164,7 +164,7 @@ exports.addOrderDetail = async (req, res, next) => {
               paymentDetailId: +createPayment?.id,
               destinationBank: body?.destinationBank,
               sourceBank: body?.sourceBank,
-              senderAccountNumber: +body?.senderAccountNumber,
+              senderAccountNumber: body?.senderAccountNumber,
               transactionDate: body.transactionDate,
               amount: +body?.amount,
             },
